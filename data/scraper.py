@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import requests
 from bs4 import BeautifulSoup
 
@@ -76,6 +77,3 @@ def scraper(word: str) -> list[Word]:
 if __name__ == "__main__":
     word = input("enter word to translate: ")
     words: list[Word] = scraper(word)
-
-
-

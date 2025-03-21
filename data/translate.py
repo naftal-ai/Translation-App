@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from data.scraper import scraper
 from data.Word import Word
 
