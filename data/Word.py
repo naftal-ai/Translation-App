@@ -6,7 +6,8 @@ from playsound3 import playsound
 
 class Word:
 
-    BASE_PATH = 'C:\\Users\\naftali.DESKTOP-VAF1KNT\\PycharmProjects\\translateApp\\data'
+    BASE_PATH = os.path.join(os.getcwd(), 'data')
+    DB_FILE = 'translation_app.db'
     def __init__(self,
                  word_id: int,
                  en_word: str,
@@ -31,7 +32,7 @@ class Word:
             response = requests.get(self.audio_path, stream=True)
             response.raise_for_status()
 
-            output_file = f'{self.BASE_PATH}\\{self.word_id}.wav'
+            output_file = os.path.join(self.BASE_PATH,f'{self.word_id}.wav')
             with open(output_file, 'wb') as file:
                 for chunk in response.iter_content(chunk_size=8192):
                     file.write(chunk)
@@ -49,7 +50,9 @@ class Word:
             print(f"Error fetching audio. \n{e}")
 
 
-    def save_to_db(self, db_path=f'{BASE_PATH}\\translation_app.db'):
+    def save_to_db(self, db_path=None):
+        if db_path is None:
+            db_path = Word.get_db_path()
         """Save the word object to the database."""
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -84,7 +87,9 @@ class Word:
         finally:
             conn.close()
 
-    def delete_from_db(self, db_path=f'{BASE_PATH}\\translation_app.db'):
+    def delete_from_db(self, db_path=None):
+        if db_path is None:
+            db_path = Word.get_db_path()
         """
         Delete the word and its related entries (inflections and examples) from the database.
         """
@@ -117,7 +122,11 @@ class Word:
             conn.close()
 
     @classmethod
-    def get_from_db(cls, en_word, db_path=f'{BASE_PATH}\\translation_app.db') -> list[classmethod]:
+    def get_from_db(cls, en_word, db_path=None) -> list[classmethod]:
+        if db_path is None:
+            db_path = cls.get_db_path()
+
+        
         """Retrieve a word object from the database by English word."""
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -158,7 +167,11 @@ class Word:
 
         finally:
             conn.close()
-
+    
+    @classmethod
+    def get_db_path(cls):
+        return os.path.join(cls.BASE_PATH, cls.DB_FILE) 
+    
     def __str__(self):
         """String representation of the Word object."""
         return (f"Word ID: {self.word_id}\n"
