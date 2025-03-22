@@ -3,6 +3,7 @@ import sqlite3
 import requests
 import os
 from playsound3 import playsound
+from typing import Optional
 
 class Word:
 
@@ -13,7 +14,7 @@ class Word:
                  en_word: str,
                  part_of_speech: str,
                  translation: str,
-                 audio_path: (str | None) = None,
+                 audio_path: Optional[str] = None,
                  inflections: (list[str] | None) = None,
                  examples: (list[str] | None) = None
                  ) -> None:
